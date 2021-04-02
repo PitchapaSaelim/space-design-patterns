@@ -92,7 +92,7 @@ class SpaceGame(GameApp):
 
     def special_canvas(self):
         self.star_drawing()
-        self.__after(200, self.delete_special_canvas())
+        self.__after(700, self.delete_special_canvas())
 
     def delete_special_canvas(self):
         return self.delete_canvas(self.special_canvas_id)
