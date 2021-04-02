@@ -60,18 +60,48 @@ class SpaceGame(GameApp):
         if self.bomb_power.value == BOMB_FULL_POWER:
             self.bomb_power.value = 0
 
-            self.bomb_canvas_id = self.canvas.create_oval(
-                self.ship.x - BOMB_RADIUS,
-                self.ship.y - BOMB_RADIUS,
-                self.ship.x + BOMB_RADIUS,
-                self.ship.y + BOMB_RADIUS
-            )
+            self.special_canvas()
 
-            self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
+            self.circle_drawing()
 
-            for e in self.enemies:
-                if self.ship.distance_to(e) <= BOMB_RADIUS:
-                    e.to_be_deleted = True
+            self.__after(200, self.delete_bomb_canvas())
+
+            self.enemy_destroy()
+
+    def delete_bomb_canvas(self):
+        return self.delete_canvas(self.bomb_canvas_id)
+
+    def delete_canvas(self, canvas_id):
+        return lambda: self.canvas.delete(canvas_id)
+
+    def __after(self, a, b):
+        return self.after(a, b)
+
+    def circle_drawing(self):
+        self.bomb_canvas_id = self.canvas.create_oval(
+            self.ship.x - BOMB_RADIUS,
+            self.ship.y - BOMB_RADIUS,
+            self.ship.x + BOMB_RADIUS,
+            self.ship.y + BOMB_RADIUS
+        )
+
+    def enemy_destroy(self):
+        for e in self.enemies:
+            if self.ship.distance_to(e) <= BOMB_RADIUS:
+                e.to_be_deleted = True
+
+    def special_canvas(self):
+        self.star_drawing()
+        self.__after(200, self.delete_special_canvas())
+
+    def delete_special_canvas(self):
+        return self.delete_canvas(self.special_canvas_id)
+
+    def star_drawing(self):
+        points = [200, 240, 210, 210, 240, 200, 210,
+                  190, 200, 160, 190, 190, 160, 200, 190, 210]
+        self.special_canvas_id = self.canvas.create_polygon(points, outline="red",
+                                                            fill='yellow', width=5)
 
     def update_score(self):
         self.score_wait += 1
@@ -138,7 +168,7 @@ class SpaceGame(GameApp):
 
 
 class EnemyGenerationStrategy(ABC):
-    @abstractmethod
+    @ abstractmethod
     def generate(self, space_game, ship):
         pass
 
@@ -219,11 +249,11 @@ class StatusWithText:
         self.label_text = Text(app, '', x, y)
         self.update_label()
 
-    @property
+    @ property
     def value(self):
         return self._value
 
-    @value.setter
+    @ value.setter
     def value(self, v):
         self._value = v
         self.update_label()
