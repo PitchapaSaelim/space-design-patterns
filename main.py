@@ -3,7 +3,6 @@ from random import randint, random
 
 import tkinter as tk
 
-from gamelib import Sprite, GameApp, Text
 from gamelib import Sprite, GameApp, Text, KeyboardHandler
 
 from consts import *
@@ -68,14 +67,14 @@ class SpaceGame(GameApp):
 
             self.enemy_destroy()
 
-    def delete_bomb_canvas(self):
-        return self.delete_canvas(self.bomb_canvas_id)
-
     def delete_canvas(self, canvas_id):
         return lambda: self.canvas.delete(canvas_id)
 
-    def __after(self, a, b):
-        return self.after(a, b)
+    def delete_bomb_canvas(self):
+        return self.delete_canvas(self.bomb_canvas_id)
+
+    def __after(self, ms, arg):
+        return self.after(ms, arg)
 
     def circle_drawing(self):
         self.bomb_canvas_id = self.canvas.create_oval(
